@@ -44,7 +44,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     {
         var updated = await categoryService.Update(id, dto);
         if (!updated) return NotFound("Category topilmadi");
-        return NoContent();
+        return Ok(updated);
     }
 
     
