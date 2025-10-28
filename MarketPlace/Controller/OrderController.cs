@@ -8,20 +8,12 @@ namespace MarketPlace.Controller;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class OrderController : ControllerBase
+public class OrderController(IOrderService orderService) : ControllerBase
 {
-    private readonly IOrderService _orderService;
-
-    public OrderController(IOrderService orderService)
-    {
-        _orderService = orderService;
-    }
-
-    
     [HttpGet]
     public async Task<ActionResult<List<OrderReadDTO>>> GetAll()
     {
-        var orders = await _orderService.GetAllAsync();
+        var orders = await orderService.GetAllAsync();
         return Ok(orders);
     }
 
@@ -29,7 +21,7 @@ public class OrderController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<OrderReadDTO>> GetById(int id)
     {
-        var order = await _orderService.GetByIdAsync(id);
+        var order = await orderService.GetByIdAsync(id);
         if (order == null)
             return NotFound("Buyurtma topilmadi");
 
@@ -43,7 +35,7 @@ public class OrderController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await _orderService.CreateAsync(dto);
+        var result = await orderService.CreateAsync(dto);
 
         if (result == "User not found")
             return BadRequest("Foydalanuvchi topilmadi");
@@ -55,7 +47,7 @@ public class OrderController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateOrder(int id, [FromBody] OrderUpdateDTO dto)
     {
-        var updated = await _orderService.UpdateAsync(id, dto);
+        var updated = await orderService.UpdateAsync(id, dto);
         if (!updated)
             return NotFound("Buyurtma topilmadi");
 
@@ -66,7 +58,7 @@ public class OrderController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var deleted = await _orderService.DeleteAsync(id);
+        var deleted = await orderService.DeleteAsync(id);
         if (!deleted)
             return NotFound("Buyurtma topilmadi");
 

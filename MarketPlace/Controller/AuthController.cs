@@ -1,5 +1,4 @@
-﻿using MarketPlace.DTO;
-using MarketPlace.DTO.Auth;
+﻿using MarketPlace.DTO.Auth;
 using MarketPlace.Interface;
 using Microsoft.AspNetCore.Mvc;
 

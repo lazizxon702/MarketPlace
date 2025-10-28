@@ -1,4 +1,5 @@
 ﻿using MarketPlace.DTO;
+using MarketPlace.Enums;
 using MarketPlace.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,8 @@ public class OrderService(AppDbContext db) : IOrderService
                 Id = o.Id,
                 UserFullName = o.User.Username,
                 TotalAmount = o.TotalAmount,
-                Status = o.Status,
-                PaymentType = o.PaymentType,
+                Status = o.Status.ToString(),
+                PaymentType = o.PaymentType.ToString(),
                 Address = o.Address
             })
             .ToListAsync();
@@ -35,8 +36,8 @@ public class OrderService(AppDbContext db) : IOrderService
             Id = order.Id,
             UserFullName = order.User.Username,
             TotalAmount = order.TotalAmount,
-            Status = order.Status,
-            PaymentType = order.PaymentType,
+            Status = order.Status.ToString(),
+            PaymentType = order.PaymentType.ToString(),
             Address = order.Address
         };
     }
@@ -50,9 +51,9 @@ public class OrderService(AppDbContext db) : IOrderService
         {
             UserId = dto.UserId,
             TotalAmount = dto.TotalAmount,
-            PaymentType = dto.PaymentType,
+            PaymentType = Enum.Parse<PaymentType>(dto.PaymentType, true),
+            Status = OrderStatus.Pending,
             Address = dto.Address,
-            Status = "Pending",
             OrderDate = DateTime.UtcNow
         };
 
@@ -68,8 +69,8 @@ public class OrderService(AppDbContext db) : IOrderService
         if (order == null || order.IsDeleted) return false;
 
         order.TotalAmount = dto.TotalAmount;
-        order.Status = dto.Status;
-        order.PaymentType = dto.PaymentType;
+        order.Status = Enum.Parse<OrderStatus>(dto.Status, true);
+        order.PaymentType = Enum.Parse<PaymentType>(dto.PaymentType, true);
         order.Address = dto.Address;
 
         await db.SaveChangesAsync();

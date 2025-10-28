@@ -19,7 +19,7 @@ public class OrderItemService(AppDbContext db) : IOrderItemService
             Id = i.Id,
             ProductName = i.Product.NameS,
             Quantity = i.Quantity,
-            Price = i.Price
+            Price = i.ItemPrice
         }).ToList();
     }
 
@@ -37,7 +37,7 @@ public class OrderItemService(AppDbContext db) : IOrderItemService
             Id = item.Id,
             ProductName = item.Product.NameS,
             Quantity = item.Quantity,
-            Price = item.Price
+            Price = item.ItemPrice
         };
     }
 
@@ -57,13 +57,13 @@ public class OrderItemService(AppDbContext db) : IOrderItemService
             OrderId = dto.OrderId,
             ProductId = dto.ProductId,
             Quantity = dto.Quantity,
-            Price = product.Price * dto.Quantity
+            ItemPrice = product.Price * dto.Quantity
         };
 
         db.OrderItems.Add(orderItem);
 
         
-        order.TotalAmount += orderItem.Price;
+        order.TotalAmount += orderItem.ItemPrice;
 
         await db.SaveChangesAsync();
         return "Buyurtma itemi qo‘shildi";
@@ -80,10 +80,10 @@ public class OrderItemService(AppDbContext db) : IOrderItemService
         if (item == null) return false;
 
         
-        item.Order.TotalAmount -= item.Price;  
+        item.Order.TotalAmount -= item.ItemPrice;  
         item.Quantity = dto.Quantity;
-        item.Price = item.Product.Price * dto.Quantity;
-        item.Order.TotalAmount += item.Price;  
+        item.ItemPrice = item.Product.Price * dto.Quantity;
+        item.Order.TotalAmount += item.ItemPrice;  
 
         await db.SaveChangesAsync();
         return true;
@@ -99,7 +99,7 @@ public class OrderItemService(AppDbContext db) : IOrderItemService
         if (item == null) return false;
 
         
-        item.Order.TotalAmount -= item.Price;
+        item.Order.TotalAmount -= item.ItemPrice;
 
         db.OrderItems.Remove(item); 
         await db.SaveChangesAsync();

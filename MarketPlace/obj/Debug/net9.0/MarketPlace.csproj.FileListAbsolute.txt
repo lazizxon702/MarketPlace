@@ -147,3 +147,4 @@ C:\Users\user\RiderProjects\MarketPlace\MarketPlace\bin\Debug\net9.0\Microsoft.I
 C:\Users\user\RiderProjects\MarketPlace\MarketPlace\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\user\RiderProjects\MarketPlace\MarketPlace\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\user\RiderProjects\MarketPlace\MarketPlace\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\user\RiderProjects\MarketPlace\MarketPlace\obj\Debug\net9.0\MarketPlace.sourcelink.json

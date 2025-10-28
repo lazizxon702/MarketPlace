@@ -16,6 +16,6 @@ namespace MarketPlace.Interface
         
         
         
-        Task<UserReadDTO> LoginAsync(string fullName, string password);
+
     }
 }

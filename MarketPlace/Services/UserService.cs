@@ -7,22 +7,23 @@ namespace MarketPlace.Services;
 public class UserService(AppDbContext db) : IUserService
 {
     public async Task<List<UserReadDTO>> GetAll()
-    {
-        var users = await db.Users
-            .Where(u => !u.IsDeleted)
-            .Select(u => new UserReadDTO
-            {
-                Id = u.Id,
+    {                                                                                                              
+        var users = await db.Users                                                                                 
+            .Where(u => !u.IsDeleted)                                                                              
+            .Select(u => new UserReadDTO                                                                           
+            {                                                                                                      
+                Id = u.Id,                                                                                         
                 Username = u.Username,
-                Role = u.Role,
-                CreatedDate = u.CreatedDate
-            })
+                Email = u.Email,
+                Role = u.Role,                                                                                     
+                CreatedDate = u.CreatedDate                                                                        
+            })                                                                                                     
             .ToListAsync();
 
         return users;
     }
 
-    public async Task<UserReadDTO?> GetById(int id)
+    public async Task<UserReadDTO> GetById(int id)
     {
         var user = await db.Users
         .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -33,6 +34,7 @@ public class UserService(AppDbContext db) : IUserService
         {
             Id = user.Id,
             Username = user.Username,
+            Email = user.Email,
             Role = user.Role,
             CreatedDate = user.CreatedDate
         };
@@ -40,11 +42,18 @@ public class UserService(AppDbContext db) : IUserService
 
     public async Task<string> CreateUser(UserCreateDTO dto)
     {
+        var exists = await db.Users.AnyAsync(u => 
+            u.Username == dto.Username || u.Email == dto.Email);
+
+        if (exists)
+            return "User with this username or email already exists.";
+
         var newUser = new User
         {
             Username = dto.Username,
             Password = dto.Password,
-            Role = dto.Role ?? "User", 
+            Email = dto.Email,
+            Role = dto.Role,
             CreatedDate = DateTime.UtcNow
         };
 
@@ -54,6 +63,7 @@ public class UserService(AppDbContext db) : IUserService
         return "User successfully created.";
     }
 
+
     public async Task<bool> UpdateUser(int id, UserUpdateDTO dto)
     {
         var user = await db.Users.FindAsync(id);
@@ -62,6 +72,7 @@ public class UserService(AppDbContext db) : IUserService
 
         user.Username = dto.FullName;
         user.Password = dto.Password;
+        user.Email = dto.Email;
         user.Role = dto.Role;
 
         await db.SaveChangesAsync();
@@ -81,19 +92,5 @@ public class UserService(AppDbContext db) : IUserService
         return true;
     }
 
-    public async Task<UserReadDTO?> LoginAsync(string fullName, string password)
-    {
-        var user = await db.Users
-            .Where(u => u.Username == fullName && u.Password == password && !u.IsDeleted)
-            .Select(u => new UserReadDTO
-            {
-                Id = u.Id,
-                Username = u.Username,
-                Role = u.Role,
-                CreatedDate = u.CreatedDate
-            })
-            .FirstOrDefaultAsync();
-
-        return user;
-    }
+  
 }

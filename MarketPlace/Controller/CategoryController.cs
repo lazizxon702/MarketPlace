@@ -8,20 +8,12 @@ namespace MarketPlace.Controller;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize] 
-public class CategoryController : ControllerBase
+public class CategoryController(ICategoryService categoryService) : ControllerBase
 {
-    private readonly ICategoryService _categoryService;
-
-    public CategoryController(ICategoryService categoryService)
-    {
-        _categoryService = categoryService;
-    }
-
-    
     [HttpGet]
     public async Task<ActionResult<List<CategoryReadDTO>>> GetAll()
     {
-        var categories = await _categoryService.GetAll();
+        var categories = await categoryService.GetAll();
         return Ok(categories);
     }
 
@@ -29,8 +21,7 @@ public class CategoryController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CategoryReadDTO>> GetById(int id)
     {
-        var category = await _categoryService.GetById(id);
-        if (category == null) return NotFound("Category topilmadi");
+        var category = await categoryService.GetById(id);
         return Ok(category);
     }
 
@@ -42,7 +33,7 @@ public class CategoryController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await _categoryService.Create(dto);
+        var result = await categoryService.Create(dto);
         return Ok(result);
     }
 
@@ -51,7 +42,7 @@ public class CategoryController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDTO dto)
     {
-        var updated = await _categoryService.Update(id, dto);
+        var updated = await categoryService.Update(id, dto);
         if (!updated) return NotFound("Category topilmadi");
         return NoContent();
     }
@@ -61,7 +52,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteCategory(int id)
     {
-        var deleted = await _categoryService.Delete(id);
+        var deleted = await categoryService.Delete(id);
         if (!deleted) return NotFound("Category topilmadi");
         return NoContent();
     }
